@@ -159,3 +159,17 @@ function extractThresholds(row) {
     right_3k: row.right_3k,  right_4k: row.right_4k, right_6k: row.right_6k, right_8k: row.right_8k
   }
 }
+export function buildPacketEmployees(companyId) {
+  return query(`
+    SELECT e.*,
+      l.name AS location_name,
+      l.province,
+      c.name AS company_name
+    FROM employees e
+    JOIN locations l ON l.location_id = e.location_id
+    JOIN companies c ON c.company_id = l.company_id
+    WHERE c.company_id = ?
+      AND e.status = 'active'
+    ORDER BY e.last_name, e.first_name
+  `, [companyId])
+}
